@@ -1,23 +1,27 @@
 const express = require('express');
-const Task = require('../models/Task');
 const router = express.Router();
 
-// Test route to create a new task
-router.post('/test-task', async (req, res) => {
-try {
-    // Create a new task document
-    const task = new Task({
-    name: 'Learn MongoDB',
-    completed: false,
-    });
+// ✅ Middlewares
+const protect = require('../middleware/authMiddleware');
+const { validateTask } = require('../middleware/validateTask');
 
-    // Save the task to the database
-    await task.save();
+// ✅ Controller functions
+const {
+    createTask,
+    getAllTasks,
+    getTaskById,
+    updateTask,
+    deleteTask,
+} = require('../controllers/taskController');
 
-    res.status(201).json({ message: 'Task created successfully!', task });
-} catch (error) {
-    res.status(500).json({ message: 'Error creating task', error });
-}
-});
+// ✅ Apply authentication to all routes
+router.use(protect);
+
+// ✅ Task Routes
+router.post('/create-task', validateTask, createTask); // Create task
+router.get('/', getAllTasks);                          // Get all tasks
+router.get('/:id', getTaskById);                       // Get task by ID
+router.put('/:id', validateTask, updateTask);          // Update task
+router.delete('/:id', deleteTask);                     // Delete task
 
 module.exports = router;

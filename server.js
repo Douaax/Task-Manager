@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();  // To load variables from the .env file
 const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('./routes/authRoutes'); // Import authentication routes
 
 // Initialize app
 const app = express();
@@ -9,7 +10,7 @@ const app = express();
 // Middleware
 app.use(express.json()); // To parse JSON in the request body
 
-
+app.use('/api/auth', authRoutes); // Use authentication routes
 
 
 // Connect to MongoDB using Mongoose
